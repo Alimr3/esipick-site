@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Esipick.tech — n8n Automation & AI Video</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --pink:#FF3CAC;--purple:#784BA0;--cyan:#2BD9D9;
+  --bg:#F5F5F3;--surface:#FFFFFF;--surface-2:#EFEFEC;
+  --border:#E2E2DE;--border-2:#CACAC5;
+  --ink:#0A0A0A;--ink-2:#222222;--ink-3:#555555;--ink-4:#939393;
+  --g-brand:linear-gradient(135deg,#FF3CAC 0%,#784BA0 50%,#2BD9D9 100%);
+  --g-cta:linear-gradient(90deg,#FF3CAC,#2BD9D9);
+  --g-pink:linear-gradient(90deg,#FF3CAC,#784BA0);
+  --sans:'Space Grotesk','Palatino Linotype',Georgia,serif;
+  --mono:'Space Mono',monospace;
+  --r:10px;--r-lg:18px;
+  --sh:0 1px 2px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.055);
+  --sh-lg:0 2px 4px rgba(0,0,0,.04),0 16px 48px rgba(0,0,0,.09);
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:16px;line-height:1.55;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.grad{background:var(--g-brand);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.section{padding:100px 5%}
+.inner{max-width:1160px;margin:0 auto}
+.ey{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--ink-4);margin-bottom:20px}
+.ey-bar{width:20px;height:1px;background:linear-gradient(90deg,#FF3CAC,#2BD9D9);flex-shrink:0}
+.h2{font-family:var(--sans);font-size:clamp(34px,4vw,54px);font-weight:700;line-height:1.1;letter-spacing:-1px;color:var(--ink);margin-bottom:14px}
+.h2 em{font-style:normal;background:var(--g-brand);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sub{font-size:16px;font-weight:400;color:var(--ink-3);line-height:1.7;max-width:480px}
+.ico{width:44px;height:44px;border-radius:10px;border:1px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:border-color .2s,background .2s,box-shadow .2s}
+.ico svg{width:18px;height:18px;stroke:var(--ink-3);stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round;transition:stroke .2s}
+.rev{opacity:0;transform:translateY(20px);transition:opacity .55s ease-out,transform .55s ease-out}
+.rev.in{opacity:1;transform:none}
+.d1{transition-delay:.07s}.d2{transition-delay:.14s}.d3{transition-delay:.21s}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 5%;background:rgba(245,245,243,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid transparent;transition:border-color .3s,box-shadow .3s}
+nav.on{border-color:var(--border);box-shadow:0 1px 20px rgba(0,0,0,.06)}
+.logo{font-family:var(--sans);font-size:15.5px;font-weight:700;color:var(--ink);text-decoration:none;letter-spacing:-.3px;display:flex;align-items:center;gap:3px}
+.logo-dot{width:6px;height:6px;border-radius:50%;background:linear-gradient(135deg,#FF3CAC,#2BD9D9);margin-left:2px;flex-shrink:0}
+.nav-links{display:flex;align-items:center;gap:28px;list-style:none}
+.nav-links a{font-size:13px;font-weight:500;color:var(--ink-3);text-decoration:none;transition:color .18s}
+.nav-links a:hover{color:var(--ink)}
+.nav-cta{background:var(--ink);color:#fff!important;padding:8px 18px;border-radius:7px;font-size:13px!important;font-weight:600!important;transition:opacity .2s!important}
+.nav-cta:hover{opacity:.8}
+.burger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.burger span{display:block;width:20px;height:1.5px;background:var(--ink);border-radius:2px;transition:.3s}
+.burger.open span:nth-child(1){transform:rotate(45deg) translateY(6.5px)}
+.burger.open span:nth-child(2){opacity:0}
+.burger.open span:nth-child(3){transform:rotate(-45deg) translateY(-6.5px)}
+.mob{display:none;position:fixed;inset:0;background:var(--bg);z-index:199;padding:90px 5% 40px;flex-direction:column}
+.mob.open{display:flex}
+.mob a{font-family:var(--sans);font-size:32px;font-weight:700;color:var(--ink);text-decoration:none;padding:16px 0;border-bottom:1px solid var(--border);transition:color .2s;letter-spacing:-.5px}
+.mob a:hover{color:var(--purple)}
+.mob a:last-child{border-bottom:none}
+
+/* HERO */
+.hero{min-height:100vh;padding:120px 5% 90px;display:flex;align-items:center;position:relative;overflow:hidden;background:var(--bg)}
+.hero-grid{position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(circle,rgba(0,0,0,.09) 1px,transparent 1px);background-size:22px 22px;opacity:.4}
+.hero-grid::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 70% at 50% 50%,transparent 20%,var(--bg) 75%)}
+.hero-glow{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 50% 50% at 92% 10%,rgba(255,60,172,.07) 0%,transparent 55%),radial-gradient(ellipse 40% 50% at 8% 90%,rgba(43,217,217,.06) 0%,transparent 55%)}
+.hero-inner{position:relative;z-index:2;max-width:1160px;margin:0 auto;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center}
+.hero-status{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-4);background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:7px 14px;margin-bottom:28px;opacity:0;animation:up .5s .1s ease-out forwards}
+.sdot{width:6px;height:6px;border-radius:50%;background:#22c55e;animation:blink 1.8s infinite;flex-shrink:0}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.hero-h1{font-family:var(--sans);font-size:clamp(44px,5.8vw,76px);font-weight:700;line-height:1.06;letter-spacing:-2px;color:var(--ink);margin-bottom:20px;opacity:0;animation:up .55s .18s ease-out forwards}
+.hero-h1 .accent{display:block;background:var(--g-brand);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-p{font-size:15.5px;color:var(--ink-3);line-height:1.75;max-width:420px;margin-bottom:36px;opacity:0;animation:up .55s .3s ease-out forwards}
+.hero-btns{display:flex;gap:10px;flex-wrap:wrap;align-items:center;opacity:0;animation:up .55s .42s ease-out forwards}
+.btn-dark{display:inline-flex;align-items:center;gap:7px;padding:13px 26px;border-radius:8px;background:var(--ink);color:#fff;font-family:var(--sans);font-size:13.5px;font-weight:600;text-decoration:none;transition:opacity .2s,transform .2s}
+.btn-dark:hover{opacity:.8;transform:translateY(-1px)}
+.btn-dark svg{width:13px;height:13px;stroke:#fff;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.btn-ghost{display:inline-flex;align-items:center;gap:7px;padding:12px 20px;border-radius:8px;border:1px solid var(--border-2);background:transparent;color:var(--ink-2);font-family:var(--sans);font-size:13.5px;font-weight:500;text-decoration:none;transition:border-color .2s,background .2s}
+.btn-ghost:hover{border-color:var(--ink-3);background:var(--surface-2)}
+.btn-ghost svg{width:13px;height:13px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.hero-stats{display:flex;gap:0;margin-top:40px;padding-top:28px;border-top:1px solid var(--border);opacity:0;animation:up .55s .56s ease-out forwards}
+.hs{flex:1;padding-right:20px;border-right:1px solid var(--border);margin-right:20px}
+.hs:last-child{border-right:none;margin-right:0;padding-right:0}
+.hs-val{font-family:var(--sans);font-size:28px;font-weight:700;letter-spacing:-1px;line-height:1;margin-bottom:3px}
+.hs-label{font-family:var(--mono);font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-4)}
+/* hero right card */
+.hero-right{opacity:0;animation:up .65s .48s ease-out forwards}
+.dash{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh-lg)}
+.dash-bar{display:flex;align-items:center;gap:6px;padding:12px 16px;background:var(--surface-2);border-bottom:1px solid var(--border)}
+.ddot{width:10px;height:10px;border-radius:50%}
+.dash-title{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-4);margin:0 auto}
+.dash-body{padding:20px}
+.pipe-label{font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--ink-4);display:flex;align-items:center;gap:6px;margin-bottom:14px}
+.plive{width:5px;height:5px;border-radius:50%;background:#22c55e;animation:blink 1.8s infinite}
+.pipeline{display:flex;align-items:center;gap:4px;margin-bottom:20px;overflow:hidden}
+.pnode{flex-shrink:0;background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-family:var(--mono);font-size:11px;font-weight:700;color:var(--ink-2);white-space:nowrap}
+.pnode.active{border-color:var(--pink);background:rgba(255,60,172,.04)}
+.parr{color:var(--border-2);font-size:12px;flex-shrink:0;font-family:var(--mono)}
+.metrics{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);border-radius:8px;overflow:hidden;margin-bottom:18px}
+.metric{background:var(--surface);padding:14px 14px}
+.m-val{font-family:var(--sans);font-size:24px;font-weight:700;letter-spacing:-1px;line-height:1;color:var(--ink)}
+.m-label{font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-4);margin-top:3px}
+.wf-status{background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:14px 16px}
+.wf-row{display:flex;align-items:center;gap:10px;padding:5px 0}
+.wf-row+.wf-row{border-top:1px solid var(--border)}
+.wf-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.wf-name{font-family:var(--mono);font-size:11px;color:var(--ink-2);flex:1}
+.wf-badge{font-family:var(--mono);font-size:9px;letter-spacing:.5px;padding:2px 7px;border-radius:3px}
+.done{background:rgba(34,197,94,.1);color:#16a34a}
+.run{background:rgba(255,60,172,.1);color:var(--pink)}
+.wait{background:var(--surface-2);color:var(--ink-4);border:1px solid var(--border)}
+@keyframes up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+
+/* TICKER */
+.ticker{background:var(--ink);padding:11px 0;overflow:hidden}
+.t-track{display:flex;width:max-content;animation:tick 32s linear infinite}
+.ti{display:inline-flex;align-items:center;gap:12px;padding:0 32px;font-family:var(--mono);font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.35);white-space:nowrap}
+.ti-sep{width:3px;height:3px;border-radius:50%;background:var(--pink);flex-shrink:0;opacity:.7}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* LOGOS */
+.logos{padding:48px 5%;background:var(--surface);border-bottom:1px solid var(--border)}
+.logos-label{font-family:var(--mono);font-size:9.5px;letter-spacing:2.5px;text-transform:uppercase;color:var(--ink-4);text-align:center;margin-bottom:32px}
+.logos-row{display:flex;align-items:center;justify-content:center;gap:44px;flex-wrap:wrap}
+.logo-item{display:flex;align-items:center;gap:9px;opacity:.35;filter:grayscale(1);transition:opacity .2s}
+.logo-item:hover{opacity:.65}
+.logo-icon{width:28px;height:28px;border-radius:6px;background:var(--ink);display:flex;align-items:center;justify-content:center}
+.logo-icon svg{width:14px;height:14px;stroke:#fff;stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.logo-name{font-family:var(--sans);font-size:13px;font-weight:700;color:var(--ink)}
+
+/* SERVICES */
+.svc-bg{background:var(--surface)}
+.svc-hd{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:end;margin-bottom:60px}
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);background:var(--border);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;gap:1px}
+.svc{background:var(--surface);padding:32px 28px;position:relative;transition:background .2s;cursor:default}
+.svc:hover{background:var(--bg)}
+.svc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--g-brand);opacity:0;transition:opacity .2s}
+.svc:hover::before{opacity:1}
+.svc:hover .ico{border-color:rgba(120,75,160,.4);background:rgba(120,75,160,.05)}
+.svc:hover .ico svg{stroke:var(--purple)}
+.svc-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:20px}
+.svc-num{font-family:var(--mono);font-size:10px;color:var(--ink-4);padding-top:2px;letter-spacing:1px}
+.svc-title{font-family:var(--sans);font-size:15px;font-weight:700;color:var(--ink);margin-bottom:5px;letter-spacing:-.2px}
+.svc-tagline{font-family:var(--mono);font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:var(--purple);margin-bottom:10px}
+.svc-desc{font-size:13.5px;color:var(--ink-3);line-height:1.65;margin-bottom:16px}
+.svc-stack{font-family:var(--mono);font-size:9.5px;letter-spacing:.8px;color:var(--ink-4)}
+
+/* PROCESS */
+.proc-layout{display:grid;grid-template-columns:1fr 1fr;gap:90px;align-items:center}
+.proc-steps{margin-top:44px}
+.pstep{display:flex;gap:16px;padding:22px 0;border-bottom:1px solid var(--border);transition:padding-left .2s;cursor:default}
+.pstep:first-child{border-top:1px solid var(--border)}
+.pstep:hover{padding-left:8px}
+.pstep:hover .ico{border-color:rgba(255,60,172,.35);background:rgba(255,60,172,.04)}
+.pstep:hover .ico svg{stroke:var(--pink)}
+.pstep-n{font-family:var(--mono);font-size:10px;color:var(--ink-4);padding-top:13px;flex-shrink:0;width:22px;letter-spacing:1px}
+.pstep-title{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:3px;letter-spacing:-.2px}
+.pstep-tag{font-family:var(--mono);font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:var(--purple);margin-bottom:6px}
+.pstep-desc{font-size:13.5px;color:var(--ink-3);line-height:1.65}
+/* process visual */
+.proc-vis{position:relative;height:490px}
+.pcard{position:absolute;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--sh)}
+.pc-main{top:0;left:0;right:0;padding:20px}
+.pc-topbar{display:flex;align-items:center;gap:6px;padding:8px 12px;background:var(--surface-2);border-radius:7px;margin-bottom:14px}
+.pc-topbar span{font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-4);margin-left:6px}
+.pc-chain{display:flex;flex-direction:column;gap:6px}
+.pc-node{background:var(--surface-2);border:1px solid var(--border);border-radius:7px;padding:9px 12px;display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;font-weight:700;color:var(--ink-2)}
+.pc-nd{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.pc-badge{margin-left:auto;font-family:var(--mono);font-size:9px;letter-spacing:.5px;padding:2px 7px;border-radius:3px}
+.pc-arr{padding-left:18px;font-family:var(--mono);font-size:11px;color:var(--border-2)}
+.pc-video{bottom:0;right:0;width:55%;padding:18px}
+.pc-stat{bottom:84px;left:0;width:44%;padding:20px}
+.pc-sval{font-family:var(--sans);font-size:38px;font-weight:700;letter-spacing:-2px;line-height:1;margin-bottom:4px}
+.pc-slabel{font-family:var(--mono);font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:var(--ink-3)}
+.vid-thumb{width:100%;aspect-ratio:16/9;border-radius:8px;background:linear-gradient(135deg,#0f0f1e,#1a0a2e,#0a1a2e);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+.vid-sh{position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,60,172,.18),rgba(120,75,160,.14),rgba(43,217,217,.1));animation:sh 4s ease-in-out infinite alternate}
+@keyframes sh{from{opacity:.5}to{opacity:1}}
+.vid-play{position:relative;z-index:1;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center}
+.vid-play svg{width:11px;height:11px;stroke:var(--ink);stroke-width:2;fill:none;margin-left:2px}
+.vid-title{font-family:var(--sans);font-size:12.5px;font-weight:600;color:var(--ink)}
+.vid-sub{font-family:var(--mono);font-size:9.5px;letter-spacing:.5px;color:var(--ink-4);margin-top:3px}
+
+/* USE CASES */
+.uc-bg{background:#0A0A0A}
+.uc-hd{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:52px}
+.uc-hd .h2{color:#fff}
+.uc-hd .ey{color:rgba(255,255,255,.3)}
+.uc-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.07);border-radius:var(--r-lg);overflow:hidden}
+.uc{background:rgba(255,255,255,.025);padding:36px 32px;position:relative;overflow:hidden;transition:background .2s;cursor:default}
+.uc:hover{background:rgba(255,255,255,.045)}
+.uc::before{content:'';position:absolute;top:0;left:0;right:0;height:1.5px;background:var(--g-brand);opacity:0;transition:opacity .2s}
+.uc:hover::before{opacity:1}
+.uc.wide{grid-column:span 2;display:grid;grid-template-columns:1fr 1fr;gap:56px}
+.uc-num{font-family:var(--mono);font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.2);margin-bottom:16px}
+.uc-title{font-family:var(--sans);font-size:21px;font-weight:700;color:#fff;margin-bottom:5px;letter-spacing:-.3px;line-height:1.2}
+.uc-tagline{font-family:var(--mono);font-size:9.5px;letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,60,172,.7);margin-bottom:12px}
+.uc-desc{font-size:13.5px;color:rgba(255,255,255,.42);line-height:1.7;margin-bottom:20px}
+.uc-tags{display:flex;gap:6px;flex-wrap:wrap}
+.uc-tag{font-family:var(--mono);font-size:9px;letter-spacing:.5px;color:rgba(255,255,255,.28);border:1px solid rgba(255,255,255,.09);padding:4px 9px;border-radius:4px}
+.uc-nums{display:flex;flex-direction:column;justify-content:center;gap:16px}
+.uc-nb{padding:20px 22px;border-radius:var(--r);border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03)}
+.uc-nval{font-family:var(--sans);font-size:40px;font-weight:700;letter-spacing:-2px;line-height:1;margin-bottom:4px}
+.uc-nlabel{font-family:var(--mono);font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.3)}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a href="#" class="logo">esipick<span style="opacity:.35">.</span>tech<span class="logo-dot"></span></a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#founder">About</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#blog">Insights</a></li>
+    <li><a href="#contact" class="nav-cta">Book a Call</a></li>
+  </ul>
+  <div class="burger" id="burger"><span></span><span></span><span></span></div>
+</nav>
+<div class="mob" id="mob">
+  <a href="#services" onclick="cm()">Services</a>
+  <a href="#process" onclick="cm()">Process</a>
+  <a href="#founder" onclick="cm()">About</a>
+  <a href="#pricing" onclick="cm()">Pricing</a>
+  <a href="#blog" onclick="cm()">Insights</a>
+  <a href="#contact" onclick="cm()">Book a Call →</a>
+</div>
+
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-status"><span class="sdot"></span>System live — 47 workflows running</div>
+      <h1 class="hero-h1">Your business,<br><span class="accent">running while<br>you sleep.</span></h1>
+      <p class="hero-p">We build n8n automation pipelines and AI video content for companies serious about growth — without growing their headcount. 15 years of technology practice behind every workflow.</p>
+      <div class="hero-btns">
+        <a href="#contact" class="btn-dark">Book a free strategy call <svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+        <a href="#usecases" class="btn-ghost"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5"/><path d="M6.5 5.5l4 2.5-4 2.5V5.5z" fill="currentColor" stroke="none"/></svg>See use cases</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hs"><div class="hs-val grad">15+</div><div class="hs-label">Years in tech</div></div>
+        <div class="hs"><div class="hs-val">200+</div><div class="hs-label">Workflows built</div></div>
+        <div class="hs"><div class="hs-val">40h</div><div class="hs-label">Avg saved / mo</div></div>
+        <div class="hs"><div class="hs-val" style="color:#F59E0B">5.0★</div><div class="hs-label">Clutch rating</div></div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="dash">
+        <div class="dash-bar">
+          <div class="ddot" style="background:#FF5F56"></div><div class="ddot" style="background:#FEBC2E"></div><div class="ddot" style="background:#27C93F"></div>
+          <span class="dash-title">pipeline-monitor / live</span>
+        </div>
+        <div class="dash-body">
+          <div class="pipe-label"><span class="plive"></span>Lead gen — running</div>
+          <div class="pipeline">
+            <div class="pnode active">Apollo</div><div class="parr">→</div>
+            <div class="pnode">AI Score</div><div class="parr">→</div>
+            <div class="pnode">Enrich</div><div class="parr">→</div>
+            <div class="pnode">Email</div><div class="parr">→</div>
+            <div class="pnode">CRM</div>
+          </div>
+          <div class="metrics">
+            <div class="metric"><div class="m-val grad">847</div><div class="m-label">Leads / mo</div></div>
+            <div class="metric"><div class="m-val">4.2×</div><div class="m-label">Conversion</div></div>
+            <div class="metric"><div class="m-val">0</div><div class="m-label">Manual ops</div></div>
+          </div>
+          <div class="wf-status">
+            <div class="wf-row"><div class="wf-dot" style="background:#22c55e"></div><span class="wf-name">onboarding-trigger.n8n</span><span class="wf-badge done">Done</span></div>
+            <div class="wf-row"><div class="wf-dot" style="background:var(--pink);animation:blink 1.4s infinite"></div><span class="wf-name">whatsapp-welcome.n8n</span><span class="wf-badge run">Running</span></div>
+            <div class="wf-row"><div class="wf-dot" style="background:var(--border-2)"></div><span class="wf-name">crm-sync.n8n</span><span class="wf-badge wait">Queued</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="ticker">
+  <div class="t-track">
+    <span class="ti"><span class="ti-sep"></span>n8n workflow automation</span><span class="ti"><span class="ti-sep"></span>AI video production</span><span class="ti"><span class="ti-sep"></span>lead generation pipelines</span><span class="ti"><span class="ti-sep"></span>WhatsApp business automation</span><span class="ti"><span class="ti-sep"></span>AI avatar &amp; lip-sync</span><span class="ti"><span class="ti-sep"></span>CRM &amp; invoice automation</span><span class="ti"><span class="ti-sep"></span>AI support desks</span><span class="ti"><span class="ti-sep"></span>LinkedIn auto-posting</span><span class="ti"><span class="ti-sep"></span>client onboarding systems</span><span class="ti"><span class="ti-sep"></span>n8n workflow automation</span><span class="ti"><span class="ti-sep"></span>AI video production</span><span class="ti"><span class="ti-sep"></span>lead generation pipelines</span><span class="ti"><span class="ti-sep"></span>WhatsApp business automation</span><span class="ti"><span class="ti-sep"></span>AI avatar &amp; lip-sync</span><span class="ti"><span class="ti-sep"></span>CRM &amp; invoice automation</span><span class="ti"><span class="ti-sep"></span>AI support desks</span><span class="ti"><span class="ti-sep"></span>LinkedIn auto-posting</span><span class="ti"><span class="ti-sep"></span>client onboarding systems</span>
+  </div>
+</div>
+
+<div class="logos rev">
+  <div class="logos-label">Trusted by teams across UK · US · EU · Middle East</div>
+  <div class="logos-row">
+    <div class="logo-item"><div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div><span class="logo-name">reGenesis</span></div>
+    <div class="logo-item"><div class="logo-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg></div><span class="logo-name">Afforest</span></div>
+    <div class="logo-item"><div class="logo-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div><span class="logo-name">AppDev</span></div>
+    <div class="logo-item"><div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg></div><span class="logo-name">ReadyHealth</span></div>
+    <div class="logo-item"><div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div><span class="logo-name">Shepherd</span></div>
+    <div class="logo-item"><div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><span class="logo-name">GiftcardXP</span></div>
+  </div>
+</div>
+
+<section class="section svc-bg" id="services">
+  <div class="inner">
+    <div class="svc-hd">
+      <div><div class="ey rev"><span class="ey-bar"></span>What we build</div><h2 class="h2 rev d1">Two disciplines.<br><em>One focus.</em></h2></div>
+      <p class="sub rev d2">We go deep on automation and AI video — not broad. Specialists who've run these exact systems inside their own agencies for 15 years.</p>
+    </div>
+    <div class="svc-grid rev d1">
+      <div class="svc"><div class="svc-top"><span class="svc-num">01</span><div class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="6" height="6" rx="1.5"/><rect x="15" y="3" width="6" height="6" rx="1.5"/><rect x="9" y="15" width="6" height="6" rx="1.5"/><path d="M6 9v3h6m6-3v3h-6"/></svg></div></div><div class="svc-title">n8n Workflow Automation</div><div class="svc-tagline">Self-hosted · Yours forever</div><p class="svc-desc">Visual, powerful pipelines connecting your tools and running your operations — without monthly SaaS fees eating into your margins.</p><div class="svc-stack">n8n · Zapier · Make</div></div>
+      <div class="svc"><div class="svc-top"><span class="svc-num">02</span><div class="ico"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div></div><div class="svc-title">Autonomous Lead Generation</div><div class="svc-tagline">Pipeline fills while you sleep</div><p class="svc-desc">Apollo-powered outbound that finds, qualifies, enriches, and reaches your ICP automatically. You touch only warm replies.</p><div class="svc-stack">Apollo · Clay · Instantly</div></div>
+      <div class="svc"><div class="svc-top"><span class="svc-num">03</span><div class="ico"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div></div><div class="svc-title">AI Video Production</div><div class="svc-tagline">Studio quality · Fraction of cost</div><p class="svc-desc">HeyGen and Sync.so avatar videos for demos, onboarding, training, and campaigns — delivered in hours, not weeks.</p><div class="svc-stack">HeyGen · Sync.so · D-ID</div></div>
+      <div class="svc"><div class="svc-top"><span class="svc-num">04</span><div class="ico"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div></div><div class="svc-title">WhatsApp Business Automation</div><div class="svc-tagline">Instant replies · Zero manual effort</div><p class="svc-desc">Twilio-powered flows for communication, follow-ups, payment reminders, and AI-driven 24/7 responses.</p><div class="svc-stack">Twilio · WhatsApp API</div></div>
+      <div class="svc"><div class="svc-top"><span class="svc-num">05</span><div class="ico"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div></div><div class="svc-title">Social Media Auto-Posting</div><div class="svc-tagline">Your brand · Always present</div><p class="svc-desc">AI-drafted content, one-click approval, automated scheduling across LinkedIn and Twitter — daily, without you.</p><div class="svc-stack">LinkedIn API · Twitter · Claude AI</div></div>
+      <div class="svc"><div class="svc-top"><span class="svc-num">06</span><div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg></div></div><div class="svc-title">AI Support Desk</div><div class="svc-tagline">Answers in seconds · Always on</div><p class="svc-desc">Custom AI trained on your business, handling queries, qualifying leads, and escalating only what needs a human.</p><div class="svc-stack">Claude · GPT · Custom RAG</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="process">
+  <div class="inner">
+    <div class="proc-layout">
+      <div>
+        <div class="ey rev"><span class="ey-bar"></span>How we work</div>
+        <h2 class="h2 rev d1">Brief to live<br><em>workflow in days.</em></h2>
+        <div class="proc-steps rev d2">
+          <div class="pstep"><span class="pstep-n">01</span><div class="ico" style="margin-right:14px;flex-shrink:0"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></div><div><div class="pstep-title">Discovery &amp; Mapping</div><div class="pstep-tag">Understand before we build</div><p class="pstep-desc">We audit your tools, identify bottlenecks, and design the exact automation architecture — not a template.</p></div></div>
+          <div class="pstep"><span class="pstep-n">02</span><div class="ico" style="margin-right:14px;flex-shrink:0"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div><div><div class="pstep-title">Build Node by Node</div><div class="pstep-tag">No black boxes — ever</div><p class="pstep-desc">Each step built and tested in isolation. You see every decision before it touches your live data.</p></div></div>
+          <div class="pstep"><span class="pstep-n">03</span><div class="ico" style="margin-right:14px;flex-shrink:0"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><div><div class="pstep-title">Deploy &amp; Monitor</div><div class="pstep-tag">Error-proof from day one</div><p class="pstep-desc">Full error handling, retries, monitoring built in. Two weeks close support post-launch — standard.</p></div></div>
+          <div class="pstep"><span class="pstep-n">04</span><div class="ico" style="margin-right:14px;flex-shrink:0"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div><div><div class="pstep-title">Optimise &amp; Scale</div><div class="pstep-tag">A partnership — not a handoff</div><p class="pstep-desc">Monthly reviews, performance tracking, continuous improvements. Your automation grows with your business.</p></div></div>
+        </div>
+      </div>
+      <div class="proc-vis rev d2">
+        <div class="pcard pc-main">
+          <div class="pc-topbar"><div class="ddot" style="background:#FF5F56;width:8px;height:8px"></div><div class="ddot" style="background:#FEBC2E;width:8px;height:8px"></div><div class="ddot" style="background:#27C93F;width:8px;height:8px"></div><span>onboarding-pipeline.n8n</span></div>
+          <div class="pc-chain">
+            <div class="pc-node"><div class="pc-nd" style="background:#22c55e"></div>Typeform Submission<span class="pc-badge done">Done</span></div>
+            <div class="pc-arr">↓</div>
+            <div class="pc-node"><div class="pc-nd" style="background:var(--pink);animation:blink 1.4s infinite"></div>Send WhatsApp<span class="pc-badge run">Running</span></div>
+            <div class="pc-arr">↓</div>
+            <div class="pc-node" style="opacity:.45"><div class="pc-nd" style="background:var(--border-2)"></div>Create Notion Project<span class="pc-badge wait">Queued</span></div>
+            <div class="pc-arr">↓</div>
+            <div class="pc-node" style="opacity:.45"><div class="pc-nd" style="background:var(--border-2)"></div>Schedule Kickoff<span class="pc-badge wait">Queued</span></div>
+          </div>
+        </div>
+        <div class="pcard pc-video">
+          <div style="font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-4);margin-bottom:12px">AI video output</div>
+          <div class="vid-thumb"><div class="vid-sh"></div><div class="vid-play"><svg viewBox="0 0 16 16"><path d="M4 3l10 5-10 5V3z" fill="currentColor" stroke="none"/></svg></div></div>
+          <div class="vid-title">Product Demo — AI Avatar</div><div class="vid-sub">6h turnaround · HeyGen</div>
+        </div>
+        <div class="pcard pc-stat">
+          <div style="font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-4);margin-bottom:10px">This month</div>
+          <div class="pc-sval grad">40h</div><div class="pc-slabel">Saved on manual tasks</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section uc-bg" id="usecases">
+  <div class="inner">
+    <div class="uc-hd">
+      <div><div class="ey rev"><span class="ey-bar" style="background:linear-gradient(90deg,#FF3CAC,#2BD9D9)"></span>Use cases</div><h2 class="h2 rev d1">Real automations.<br><em>Real results.</em></h2></div>
+      <a href="#contact" class="btn-ghost" style="border-color:rgba(255,255,255,.12);color:rgba(255,255,255,.45);background:transparent;flex-shrink:0">All use cases →</a>
+    </div>
+    <div class="uc-grid rev">
+      <div class="uc wide">
+        <div><div class="uc-num">Flagship</div><div class="uc-title">Autonomous Lead Generation Pipeline</div><div class="uc-tagline">Your best salesperson never sleeps</div><p class="uc-desc">Apollo scrapes your ICP. AI scores and enriches every lead. Personalised emails send automatically. Replies route to CRM. You only touch the warm ones.</p><div class="uc-tags"><span class="uc-tag">Apollo</span><span class="uc-tag">n8n</span><span class="uc-tag">AI Enrichment</span><span class="uc-tag">Instantly</span><span class="uc-tag">HubSpot</span></div></div>
+        <div class="uc-nums"><div class="uc-nb"><div class="uc-nval grad">847</div><div class="uc-nlabel">Leads / mo · zero human touches</div></div><div class="uc-nb"><div class="uc-nval" style="color:#FF3CAC">4.2×</div><div class="uc-nlabel">Conversion lift vs. manual outreach</div></div></div>
+      </div>
+      <div class="uc"><div class="uc-num">02</div><div class="uc-title">AI Video for Product Launches</div><div class="uc-tagline">12 languages · 5 formats · hours not weeks</div><p class="uc-desc">Polished AI avatar demo before your competitor's agency returns your brief. One shoot, infinite variations.</p><div class="uc-tags"><span class="uc-tag">HeyGen</span><span class="uc-tag">Lip-Sync</span><span class="uc-tag">Multi-language</span></div></div>
+      <div class="uc"><div class="uc-num">03</div><div class="uc-title">Client Onboarding on Autopilot</div><div class="uc-tagline">Contract signed → everything triggers</div><p class="uc-desc">Welcome WhatsApp → form → Notion project → kickoff booked. Zero manual steps, every time.</p><div class="uc-tags"><span class="uc-tag">Twilio</span><span class="uc-tag">n8n</span><span class="uc-tag">Notion</span></div></div>
+      <div class="uc"><div class="uc-num">04</div><div class="uc-title">Invoice &amp; Payment Follow-Up</div><div class="uc-tagline">Never chase money manually again</div><p class="uc-desc">Overdue reminders escalate: email → WhatsApp → call booking. Fully automated every time.</p><div class="uc-tags"><span class="uc-tag">Stripe</span><span class="uc-tag">n8n</span><span class="uc-tag">WhatsApp</span></div></div>
+      <div class="uc"><div class="uc-num">05</div><div class="uc-title">Daily Social Auto-Posting</div><div class="uc-tagline">Consistent presence · Zero grind</div><p class="uc-desc">AI drafts from your niche. One-click approval. Scheduled across LinkedIn and Twitter daily.</p><div class="uc-tags"><span class="uc-tag">LinkedIn API</span><span class="uc-tag">Claude AI</span><span class="uc-tag">n8n</span></div></div>
+    </div>
+  </div>
+</section>
+
+<style>
+/* FOUNDER */
+.founder-bg{background:var(--surface)}
+.founder-layout{display:grid;grid-template-columns:360px 1fr;gap:80px;align-items:center}
+.founder-frame{width:100%;aspect-ratio:3/4;border-radius:var(--r-lg);background:linear-gradient(160deg,#1a0a2e 0%,#0a0a18 50%,#0a1a1a 100%);position:relative;overflow:hidden;border:1px solid var(--border);box-shadow:var(--sh-lg)}
+.founder-shimmer{position:absolute;inset:0;background:linear-gradient(160deg,rgba(255,60,172,.13),rgba(120,75,160,.1),rgba(43,217,217,.08))}
+.founder-init{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--sans);font-size:88px;font-weight:700;color:rgba(255,255,255,.08);letter-spacing:-4px}
+.founder-badge{position:absolute;bottom:-14px;right:-14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:13px 16px;box-shadow:var(--sh)}
+.founder-badge-val{font-family:var(--sans);font-size:26px;font-weight:700;letter-spacing:-1px;line-height:1;margin-bottom:2px}
+.founder-badge-label{font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-4)}
+.founder-role{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--purple);margin-bottom:20px}
+.founder-h{font-family:var(--sans);font-size:clamp(30px,3.5vw,46px);font-weight:700;line-height:1.1;letter-spacing:-1px;color:var(--ink);margin-bottom:22px}
+.founder-h em{font-style:normal;background:var(--g-brand);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.founder-bio{font-size:15px;color:var(--ink-3);line-height:1.75;margin-bottom:16px;max-width:520px}
+.founder-traits{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:32px}
+.trait{display:flex;align-items:center;gap:6px;background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:6px 12px}
+.trait svg{width:12px;height:12px;stroke:var(--purple);stroke-width:1.8;fill:none;flex-shrink:0;stroke-linecap:round;stroke-linejoin:round}
+.trait span{font-family:var(--mono);font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:var(--ink-2)}
+.founder-links{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.f-link{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:7px;border:1px solid var(--border);background:var(--surface);font-family:var(--sans);font-size:13px;font-weight:600;color:var(--ink-2);text-decoration:none;transition:border-color .2s,box-shadow .2s}
+.f-link:hover{border-color:var(--ink-3);box-shadow:var(--sh)}
+.f-link svg{width:13px;height:13px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+/* WHY */
+.why-layout{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+.why-list{margin-top:44px}
+.why-item{display:flex;gap:14px;padding:20px 0;border-bottom:1px solid var(--border);align-items:flex-start;transition:padding-left .2s;cursor:default}
+.why-item:first-child{border-top:1px solid var(--border)}
+.why-item:hover{padding-left:6px}
+.why-item:hover .ico{border-color:rgba(43,217,217,.4);background:rgba(43,217,217,.04)}
+.why-item:hover .ico svg{stroke:var(--cyan)}
+.why-title{font-size:14.5px;font-weight:700;color:var(--ink);margin-bottom:2px;letter-spacing:-.1px}
+.why-tag{font-family:var(--mono);font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:var(--purple);margin-bottom:5px}
+.why-desc{font-size:13.5px;color:var(--ink-3);line-height:1.65}
+.trust-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh)}
+.trust-top{padding:32px;border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+.trust-top::before{content:'';position:absolute;top:-50px;right:-50px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(255,60,172,.07),transparent 70%)}
+.trust-ey{font-family:var(--mono);font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--ink-4);margin-bottom:10px}
+.trust-h{font-family:var(--sans);font-size:38px;font-weight:700;letter-spacing:-2px;line-height:1;margin-bottom:8px;color:var(--ink)}
+.trust-sub{font-size:13.5px;color:var(--ink-3);line-height:1.65}
+.trust-stats{display:grid;grid-template-columns:1fr 1fr}
+.ts{padding:20px 24px;border-bottom:1px solid var(--border);border-right:1px solid var(--border)}
+.ts:nth-child(2n){border-right:none}
+.ts:nth-last-child(-n+2){border-bottom:none}
+.ts-val{font-family:var(--sans);font-size:28px;font-weight:700;letter-spacing:-1px;line-height:1;margin-bottom:3px;color:var(--ink)}
+.ts-label{font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-4)}
+.trust-quote{padding:22px 26px}
+.tq-text{font-size:13.5px;color:var(--ink-2);line-height:1.7;margin-bottom:10px}
+.tq-author{font-size:13px;font-weight:700;color:var(--ink)}
+.tq-role{font-family:var(--mono);font-size:9.5px;letter-spacing:.5px;color:var(--ink-4)}
+
+/* TESTIMONIALS */
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:56px}
+.tcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:28px;transition:box-shadow .2s,transform .2s}
+.tcard:hover{box-shadow:var(--sh-lg);transform:translateY(-2px)}
+.tstars{display:flex;gap:3px;margin-bottom:16px}
+.star{width:12px;height:12px;background:#F59E0B;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}
+.tquote{font-size:14px;color:var(--ink-2);line-height:1.7;margin-bottom:22px}
+.tauthor{display:flex;align-items:center;gap:10px}
+.tav{width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-family:var(--sans);font-size:13px;font-weight:700;color:var(--ink-3);flex-shrink:0}
+.tname{font-size:13px;font-weight:700;color:var(--ink)}
+.trole{font-family:var(--mono);font-size:9px;letter-spacing:.5px;color:var(--ink-4)}
+
+/* BLOG */
+.blog-bg{background:var(--bg)}
+.blog-hd{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:44px}
+.blog-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:18px}
+.bcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;text-decoration:none;transition:box-shadow .2s,transform .2s;display:block}
+.bcard:hover{box-shadow:var(--sh-lg);transform:translateY(-2px)}
+.bthumb{width:100%;height:160px;background:linear-gradient(135deg,#0f0f1e,#1a0a2e,#0a1a2e);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.bcard:nth-child(2) .bthumb{background:linear-gradient(135deg,#0a1a0a,#1a2a0a,#0a1818)}
+.bcard:nth-child(3) .bthumb{background:linear-gradient(135deg,#1a0a0a,#2a0a1a,#0a0a2a)}
+.bthumb-sh{position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,60,172,.18),rgba(120,75,160,.14),rgba(43,217,217,.12));animation:sh 5s ease-in-out infinite alternate}
+.bcard:nth-child(2) .bthumb-sh{background:linear-gradient(135deg,rgba(43,217,217,.18),rgba(37,99,235,.14),rgba(120,75,160,.1))}
+.bcard:nth-child(3) .bthumb-sh{background:linear-gradient(135deg,rgba(120,75,160,.18),rgba(255,60,172,.12),rgba(43,217,217,.1))}
+.bthumb-ico{position:relative;z-index:1;width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.1);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center}
+.bthumb-ico svg{width:17px;height:17px;stroke:rgba(255,255,255,.8);stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.bbody{padding:20px 20px 22px}
+.bcat{font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--purple);margin-bottom:7px}
+.btitle{font-family:var(--sans);font-size:16px;font-weight:700;color:var(--ink);line-height:1.3;margin-bottom:7px;letter-spacing:-.2px}
+.bdesc{font-size:13px;color:var(--ink-3);line-height:1.65;margin-bottom:16px}
+.bmeta{display:flex;align-items:center;gap:7px}
+.bav{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#FF3CAC,#784BA0);display:flex;align-items:center;justify-content:center;font-family:var(--sans);font-size:10px;font-weight:700;color:#fff;flex-shrink:0}
+.bauthor{font-family:var(--mono);font-size:9.5px;letter-spacing:.5px;color:var(--ink-3)}
+.bdate{font-family:var(--mono);font-size:9.5px;letter-spacing:.5px;color:var(--ink-4);margin-left:auto}
+.bcard.feat .bthumb{height:220px}
+.bcard.feat .btitle{font-size:18px}
+
+/* PRICING */
+.pricing-hd{text-align:center;max-width:520px;margin:0 auto 60px}
+.pricing-hd .ey{justify-content:center}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:start}
+.pcard{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-lg);padding:32px 28px;transition:box-shadow .2s;position:relative}
+.pcard:hover{box-shadow:var(--sh)}
+.pcard.feat{background:var(--ink);border-color:var(--ink)}
+.p-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#fff;padding:5px 14px;border-radius:4px;background:linear-gradient(90deg,#FF3CAC,#784BA0);white-space:nowrap}
+.p-tier{font-family:var(--mono);font-size:9.5px;letter-spacing:2.5px;text-transform:uppercase;color:var(--ink-4);margin-bottom:18px}
+.pcard.feat .p-tier{color:rgba(255,255,255,.3)}
+.p-price{font-family:var(--sans);font-size:50px;font-weight:700;color:var(--ink);letter-spacing:-3px;line-height:1;margin-bottom:4px}
+.p-price sup{font-size:22px;vertical-align:top;margin-top:10px;letter-spacing:0}
+.pcard.feat .p-price{color:#fff}
+.p-period{font-family:var(--mono);font-size:10px;letter-spacing:1px;color:var(--ink-4);margin-bottom:20px}
+.pcard.feat .p-period{color:rgba(255,255,255,.3)}
+.p-div{height:1px;background:var(--border);margin:16px 0}
+.pcard.feat .p-div{background:rgba(255,255,255,.1)}
+.p-tagline{font-family:var(--mono);font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:var(--purple);margin-bottom:10px}
+.pcard.feat .p-tagline{color:rgba(255,60,172,.7)}
+.p-desc{font-size:13.5px;color:var(--ink-3);line-height:1.65;margin-bottom:20px}
+.pcard.feat .p-desc{color:rgba(255,255,255,.45)}
+.p-feats{list-style:none;margin-bottom:26px}
+.p-feats li{font-size:13.5px;color:var(--ink-2);padding:5px 0;display:flex;align-items:center;gap:9px}
+.pcard.feat .p-feats li{color:rgba(255,255,255,.65)}
+.p-feats li::before{content:'';width:4px;height:4px;border-radius:50%;background:linear-gradient(90deg,#FF3CAC,#2BD9D9);flex-shrink:0}
+.p-btn{display:block;text-align:center;padding:12px;border-radius:7px;font-family:var(--sans);font-size:13.5px;font-weight:600;text-decoration:none;transition:opacity .2s}
+.pb-dk{background:var(--ink);color:#fff}.pb-dk:hover{opacity:.8}
+.pb-gh{border:1px solid var(--border-2);color:var(--ink)}.pb-gh:hover{border-color:var(--ink-3)}
+.pb-lt{background:#fff;color:var(--ink)}.pb-lt:hover{opacity:.88}
+
+/* FAQ */
+.faq-bg{background:var(--surface)}
+.faq-layout{display:grid;grid-template-columns:1fr 1.6fr;gap:80px}
+.faq-list{margin-top:44px}
+.faq-item{border-bottom:1px solid var(--border);overflow:hidden}
+.faq-item:first-child{border-top:1px solid var(--border)}
+.faq-q{width:100%;background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:20px 0;gap:16px;text-align:left}
+.faq-q-text{font-family:var(--sans);font-size:14.5px;font-weight:700;color:var(--ink);line-height:1.4;letter-spacing:-.1px}
+.faq-ico{width:26px;height:26px;border-radius:6px;border:1px solid var(--border);background:var(--surface-2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:border-color .2s,background .2s}
+.faq-ico svg{width:11px;height:11px;stroke:var(--ink-3);stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s}
+.faq-item.open .faq-ico{border-color:var(--purple);background:rgba(120,75,160,.07)}
+.faq-item.open .faq-ico svg{stroke:var(--purple);transform:rotate(45deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .35s ease;font-size:13.5px;color:var(--ink-3);line-height:1.72;padding:0}
+.faq-item.open .faq-a{max-height:300px;padding-bottom:20px}
+
+/* CONTACT */
+.contact-bg{background:#0A0A0A}
+.contact-layout{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+.contact-left .h2{color:#fff}
+.contact-left .ey{color:rgba(255,255,255,.3)}
+.contact-left .sub{color:rgba(255,255,255,.4);max-width:380px;margin-top:8px}
+.cf-features{margin-top:44px;display:flex;flex-direction:column;gap:18px}
+.cf-item{display:flex;gap:13px;align-items:flex-start}
+.cf-ico{width:36px;height:36px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.cf-ico svg{width:15px;height:15px;stroke:rgba(255,255,255,.5);stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.cf-title{font-family:var(--sans);font-size:13.5px;font-weight:700;color:rgba(255,255,255,.8);margin-bottom:2px}
+.cf-desc{font-size:12.5px;color:rgba(255,255,255,.32);line-height:1.6}
+.cform{background:var(--surface);border-radius:var(--r-lg);padding:36px 32px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.form-head-title{font-family:var(--sans);font-size:20px;font-weight:700;color:var(--ink);margin-bottom:5px;letter-spacing:-.3px}
+.form-head-sub{font-family:var(--mono);font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-4);margin-bottom:26px}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fg{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.flabel{font-family:var(--mono);font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-3)}
+.finput,.fselect,.ftextarea{width:100%;padding:11px 13px;background:var(--surface-2);border:1px solid var(--border);border-radius:7px;font-family:var(--sans);font-size:14px;color:var(--ink);outline:none;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;appearance:none}
+.finput:focus,.fselect:focus,.ftextarea:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(120,75,160,.09)}
+.ftextarea{resize:vertical;min-height:100px;line-height:1.6}
+.fselect{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%23999' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center;background-size:14px;padding-right:32px}
+.fsubmit{width:100%;padding:14px;border-radius:8px;border:none;background:linear-gradient(90deg,#FF3CAC,#784BA0);color:#fff;font-family:var(--sans);font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:opacity .2s,transform .2s}
+.fsubmit:hover{opacity:.88;transform:translateY(-1px)}
+.fsubmit svg{width:14px;height:14px;stroke:#fff;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.fnote{font-family:var(--mono);font-size:9px;letter-spacing:1px;color:var(--ink-4);text-align:center;margin-top:10px;line-height:1.6}
+
+/* CTA STRIP */
+.cta-strip{background:var(--bg);border-top:1px solid var(--border);padding:80px 5%;text-align:center}
+.cta-strip .h2{margin-bottom:12px}
+.cta-strip .sub{margin:0 auto 32px;text-align:center;max-width:420px}
+.cta-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn-grad{display:inline-flex;align-items:center;gap:7px;padding:14px 30px;border-radius:8px;background:linear-gradient(90deg,#FF3CAC,#784BA0);color:#fff;font-family:var(--sans);font-size:14px;font-weight:600;text-decoration:none;transition:opacity .2s,transform .2s}
+.btn-grad:hover{opacity:.88;transform:translateY(-1px)}
+.btn-grad svg{width:13px;height:13px;stroke:#fff;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+/* FOOTER */
+footer{background:#080808;padding:60px 5% 28px}
+.footer-inner{max-width:1160px;margin:0 auto}
+.footer-top{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:52px;padding-bottom:52px;border-bottom:1px solid rgba(255,255,255,.06)}
+.flogo{font-family:var(--sans);font-size:15px;font-weight:700;color:#fff;text-decoration:none;letter-spacing:-.3px;display:flex;align-items:center;gap:3px;margin-bottom:12px}
+.ftagline{font-size:13px;color:rgba(255,255,255,.3);line-height:1.65;margin-bottom:18px}
+.femail{font-family:var(--mono);font-size:10.5px;letter-spacing:1px;color:rgba(255,255,255,.4);text-decoration:none;transition:color .2s}
+.femail:hover{color:#fff}
+.fc-title{font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.2);margin-bottom:16px}
+.fc-links{list-style:none}
+.fc-links li{margin-bottom:9px}
+.fc-links a{font-size:13.5px;color:rgba(255,255,255,.36);text-decoration:none;transition:color .2s}
+.fc-links a:hover{color:rgba(255,255,255,.8)}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:22px;font-family:var(--mono);font-size:9.5px;letter-spacing:.5px;color:rgba(255,255,255,.18);flex-wrap:wrap;gap:8px}
+.footer-bottom a{color:rgba(255,255,255,.18);text-decoration:none;transition:color .2s}
+.footer-bottom a:hover{color:rgba(255,255,255,.5)}
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+  .hero-inner,.proc-layout,.founder-layout,.why-layout,.contact-layout{grid-template-columns:1fr}
+  .hero-right,.proc-vis{display:none}
+  .founder-frame{max-width:320px;aspect-ratio:4/3}
+  .svc-hd{grid-template-columns:1fr;gap:20px}
+  .svc-grid{grid-template-columns:1fr 1fr}
+  .uc.wide{grid-column:span 1;grid-template-columns:1fr}
+  .testi-grid{grid-template-columns:1fr 1fr}
+  .blog-grid{grid-template-columns:1fr 1fr}
+  .blog-grid .bcard.feat{grid-column:span 2}
+  .pgrid{grid-template-columns:1fr}
+  .faq-layout{grid-template-columns:1fr;gap:36px}
+  .footer-top{grid-template-columns:1fr 1fr}
+}
+@media(max-width:640px){
+  nav{padding:0 4%}.nav-links{display:none}.burger{display:flex}
+  .section{padding:72px 4%}
+  .svc-grid,.testi-grid,.pgrid{grid-template-columns:1fr}
+  .uc-grid{grid-template-columns:1fr}.uc.wide{grid-column:span 1;grid-template-columns:1fr}
+  .blog-grid{grid-template-columns:1fr}.blog-grid .bcard.feat{grid-column:span 1}
+  .hero-stats{flex-direction:column;gap:16px}
+  .hs{border-right:none;padding-right:0;margin-right:0;padding-bottom:14px;border-bottom:1px solid var(--border)}
+  .hs:last-child{border-bottom:none;padding-bottom:0}
+  .footer-top{grid-template-columns:1fr;gap:28px}
+  .frow{grid-template-columns:1fr}
+}
+</style>
+
+<section class="section founder-bg" id="founder">
+  <div class="inner">
+    <div class="founder-layout">
+      <div style="position:relative" class="rev">
+        <div class="founder-frame">
+          <div class="founder-shimmer"></div>
+          <div class="founder-init">Ali</div>
+        </div>
+        <div class="founder-badge">
+          <div class="founder-badge-val grad">15+</div>
+          <div class="founder-badge-label">Years in tech</div>
+        </div>
+      </div>
+      <div class="rev d1">
+        <div class="ey"><span class="ey-bar"></span>The person behind the work</div>
+        <div class="founder-role">Co-founder · Esipick &amp; reGenesis · CEO, Esipick Agency</div>
+        <h2 class="founder-h">Built on relationships.<br>Sharpened by<br><em>15 years of doing.</em></h2>
+        <p class="founder-bio">I'm Ali — co-founder of Esipick and reGenesis, with over a decade building technology products across the UK, US, Europe, and the Middle East. Relationship-driven and street-smart. I love talking, building, and getting my hands dirty on the work.</p>
+        <p class="founder-bio">Every workflow I build for a client, I've already stress-tested on my own operations. What you get isn't theory — it's pattern-matched from real-world builds across multiple industries and regions.</p>
+        <div class="founder-traits">
+          <div class="trait"><svg viewBox="0 0 16 16"><path d="M8 1v6l3 3"/><circle cx="8" cy="8" r="7"/></svg><span>15+ yrs in tech</span></div>
+          <div class="trait"><svg viewBox="0 0 16 16"><polyline points="4,12 8,4 12,12"/><line x1="5.5" y1="9" x2="10.5" y2="9"/></svg><span>n8n practitioner</span></div>
+          <div class="trait"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="7"/><path d="M1 8h14"/><path d="M8 1a11 11 0 0 1 0 14M8 1a11 11 0 0 0 0 14"/></svg><span>UK · US · EU · ME</span></div>
+          <div class="trait"><svg viewBox="0 0 16 16"><path d="M8 14s-6-3.5-6-7.5A4.5 4.5 0 0 1 8 2.5a4.5 4.5 0 0 1 6 4c0 4-6 7.5-6 7.5z"/></svg><span>Community-driven</span></div>
+        </div>
+        <div class="founder-links">
+          <a href="https://pk.linkedin.com/company/esipick" class="f-link" target="_blank"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>LinkedIn</a>
+          <a href="https://www.esipick.com" class="f-link" target="_blank"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>esipick.com</a>
+          <a href="#contact" class="btn-dark" style="padding:10px 18px;font-size:13px">Work with Ali <svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="why">
+  <div class="inner">
+    <div class="why-layout">
+      <div>
+        <div class="ey rev"><span class="ey-bar"></span>Why esipick.tech</div>
+        <h2 class="h2 rev d1">Building automation<br>before it had<br><em>a name.</em></h2>
+        <div class="why-list rev d2">
+          <div class="why-item"><div class="ico"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div><div><div class="why-title">Practitioners, not consultants</div><div class="why-tag">We build this for ourselves too</div><p class="why-desc">Every workflow we sell, we run internally. Battle-tested solutions, not experiments.</p></div></div>
+          <div class="why-item"><div class="ico"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div><div><div class="why-title">Full transparency, node by node</div><div class="why-tag">Your team can own it after we leave</div><p class="why-desc">No black boxes. You see every step, every condition before it goes live.</p></div></div>
+          <div class="why-item"><div class="ico"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div><div><div class="why-title">Battle-tested templates</div><div class="why-tag">Faster delivery · Fewer surprises</div><p class="why-desc">Proven n8n architectures refined across 50+ clients. Institutional knowledge, not trial and error.</p></div></div>
+          <div class="why-item"><div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div><div><div class="why-title">Four regions. One standard.</div><div class="why-tag">UK · US · EU · Middle East</div><p class="why-desc">15 years navigating different markets, tools, and compliance requirements.</p></div></div>
+        </div>
+      </div>
+      <div class="rev d2">
+        <div class="trust-card">
+          <div class="trust-top"><div class="trust-ey">In operation since 2013</div><div class="trust-h">15 years.<br>Still building.</div><p class="trust-sub">When most automation agencies didn't exist, we were already shipping enterprise software across North America.</p></div>
+          <div class="trust-stats">
+            <div class="ts"><div class="ts-val grad">50+</div><div class="ts-label">Clients automated</div></div>
+            <div class="ts"><div class="ts-val">200+</div><div class="ts-label">Workflows deployed</div></div>
+            <div class="ts"><div class="ts-val">4</div><div class="ts-label">Global regions</div></div>
+            <div class="ts"><div class="ts-val" style="color:#F59E0B">5.0★</div><div class="ts-label">Clutch rating</div></div>
+          </div>
+          <div class="trust-quote"><p class="tq-text">"After 25 years working with various teams, I keep returning to Esipick. They deliver quality, collaborate smoothly, and build genuine trust."</p><div class="tq-author">Chris Keller</div><div class="tq-role">Founder, AppDev</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--surface)" id="testimonials">
+  <div class="inner">
+    <div class="ey rev"><span class="ey-bar"></span>Client stories</div>
+    <h2 class="h2 rev d1">They said it<br><em>better than we could.</em></h2>
+    <div class="testi-grid">
+      <div class="tcard rev d1"><div class="tstars"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div></div><p class="tquote">"Working with Esipick has been transformative. Their dedication and deep understanding of my goals played a crucial role. More than a service provider — they felt like family."</p><div class="tauthor"><div class="tav">M</div><div><div class="tname">Matt Kaercher</div><div class="trole">Founder — reGenesis AG</div></div></div></div>
+      <div class="tcard rev d2"><div class="tstars"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div></div><p class="tquote">"They had a tight deadline and not only hit it — rebuilt the entire website from scratch on a new platform. A huge task executed with perfection."</p><div class="tauthor"><div class="tav">S</div><div><div class="tname">Shubhendu Sharma</div><div class="trole">Founder — Afforest</div></div></div></div>
+      <div class="tcard rev d3"><div class="tstars"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div></div><p class="tquote">"After 25 years of working with various teams, I keep returning to Esipick. They deliver quality, collaborate smoothly, and build genuine trust."</p><div class="tauthor"><div class="tav">C</div><div><div class="tname">Chris Keller</div><div class="trole">Founder — AppDev</div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section blog-bg" id="blog">
+  <div class="inner">
+    <div class="blog-hd"><div><div class="ey rev"><span class="ey-bar"></span>Insights &amp; resources</div><h2 class="h2 rev d1">Things worth<br><em>reading.</em></h2></div><a href="#" class="btn-ghost" style="flex-shrink:0">All articles →</a></div>
+    <div class="blog-grid rev">
+      <a href="#" class="bcard feat"><div class="bthumb"><div class="bthumb-sh"></div><div class="bthumb-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="6" height="6" rx="1.5"/><rect x="15" y="3" width="6" height="6" rx="1.5"/><rect x="9" y="15" width="6" height="6" rx="1.5"/><path d="M6 9v3h6m6-3v3h-6"/></svg></div></div><div class="bbody"><div class="bcat">n8n Automation</div><div class="btitle">How We Built a Fully Autonomous Lead Pipeline That Runs Without Human Input</div><p class="bdesc">A detailed breakdown of the Apollo → AI Enrichment → Instantly → HubSpot workflow we've deployed for a dozen clients.</p><div class="bmeta"><div class="bav">A</div><span class="bauthor">Ali</span><span class="bdate">May 2025</span></div></div></a>
+      <a href="#" class="bcard"><div class="bthumb"><div class="bthumb-sh"></div><div class="bthumb-ico"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div></div><div class="bbody"><div class="bcat">AI Video</div><div class="btitle">HeyGen vs Sync.so — Which One for Your Business?</div><p class="bdesc">We've used both extensively. Our honest breakdown of when each platform wins.</p><div class="bmeta"><div class="bav">A</div><span class="bauthor">Ali</span><span class="bdate">Apr 2025</span></div></div></a>
+      <a href="#" class="bcard"><div class="bthumb"><div class="bthumb-sh"></div><div class="bthumb-ico"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div></div><div class="bbody"><div class="bcat">WhatsApp Automation</div><div class="btitle">The 5-Minute WhatsApp Onboarding Flow That Wows Every Client</div><p class="bdesc">Step-by-step n8n + Twilio setup that fires the moment a contract is signed.</p><div class="bmeta"><div class="bav">A</div><span class="bauthor">Ali</span><span class="bdate">Mar 2025</span></div></div></a>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="pricing">
+  <div class="inner">
+    <div class="pricing-hd"><div class="ey rev" style="justify-content:center">Pricing</div><h2 class="h2 rev d1" style="text-align:center">Simple pricing.<br><em>Serious results.</em></h2><p class="sub rev d2" style="text-align:center;margin:0 auto">No surprise invoices. No retainer traps. Pick what fits.</p></div>
+    <div class="pgrid">
+      <div class="pcard rev d1"><div class="p-tier">Starter</div><div class="p-price"><sup>$</sup>999</div><div class="p-period">one-time project</div><div class="p-tagline">First automation · done right</div><div class="p-div"></div><p class="p-desc">For businesses automating their first process or producing their first AI video.</p><ul class="p-feats"><li>1 custom n8n workflow</li><li>Up to 5 nodes / integrations</li><li>Error handling &amp; retries</li><li>1 AI avatar video (3 min)</li><li>2 weeks post-launch support</li><li>Full workflow documentation</li></ul><a href="#contact" class="p-btn pb-gh">Get started</a></div>
+      <div class="pcard feat rev d2"><div class="p-badge">Most popular</div><div class="p-tier">Growth</div><div class="p-price"><sup>$</sup>2,499</div><div class="p-period">per month retainer</div><div class="p-tagline">Automation as a growth engine</div><div class="p-div"></div><p class="p-desc">For businesses serious about automation as strategy — ongoing build, optimise, expand.</p><ul class="p-feats"><li>Up to 4 workflows / month</li><li>Lead generation pipeline</li><li>4 AI videos / month</li><li>WhatsApp automation</li><li>Social auto-posting pipeline</li><li>Monthly performance review</li><li>Priority support</li></ul><a href="#contact" class="p-btn pb-lt">Book a strategy call</a></div>
+      <div class="pcard rev d3"><div class="p-tier">Enterprise</div><div class="p-price" style="font-size:36px;letter-spacing:-1px">Custom</div><div class="p-period">bespoke engagement</div><div class="p-tagline">Automation embedded end-to-end</div><div class="p-div"></div><p class="p-desc">For companies embedding automation into every layer of their operation.</p><ul class="p-feats"><li>Unlimited workflows</li><li>Dedicated architect</li><li>Full AI video suite</li><li>Custom AI support desk</li><li>Staff training &amp; handover</li><li>SLA &amp; monitoring</li><li>Multi-region compliance</li></ul><a href="#contact" class="p-btn pb-dk">Let's talk</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="section faq-bg" id="faq">
+  <div class="inner">
+    <div class="faq-layout">
+      <div><div class="ey rev"><span class="ey-bar"></span>FAQ</div><h2 class="h2 rev d1">Questions worth<br>asking before<br><em>you reach out.</em></h2><p class="sub rev d2" style="margin-top:14px">If it's not here — that's what the strategy call is for.</p></div>
+      <div class="faq-list rev d1">
+        <div class="faq-item"><button class="faq-q" onclick="faq(this)"><span class="faq-q-text">Do I need technical knowledge to use the automations?</span><span class="faq-ico"><svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"/></svg></span></button><div class="faq-a">No. We build workflows that run without your technical involvement. We document everything clearly, train your team, and make sure you can monitor — and pause — any automation without touching code.</div></div>
+        <div class="faq-item"><button class="faq-q" onclick="faq(this)"><span class="faq-q-text">What makes n8n better than Zapier or Make?</span><span class="faq-ico"><svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"/></svg></span></button><div class="faq-a">n8n is self-hosted — you own your data and pay no per-task fees as you scale. It's significantly more powerful for complex, conditional workflows. We'll recommend the right tool for your situation — Zapier and Make have their place too.</div></div>
+        <div class="faq-item"><button class="faq-q" onclick="faq(this)"><span class="faq-q-text">How long does it take to build and deploy a workflow?</span><span class="faq-ico"><svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"/></svg></span></button><div class="faq-a">Simple workflows: 3–5 days. Complex multi-step pipelines: 2–3 weeks. AI video production: 24–72 hours per video. We'll give a precise timeline after discovery.</div></div>
+        <div class="faq-item"><button class="faq-q" onclick="faq(this)"><span class="faq-q-text">What if a workflow breaks after handover?</span><span class="faq-ico"><svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"/></svg></span></button><div class="faq-a">Every workflow includes error handling, automatic retries, and alert notifications. We monitor for 2 weeks post-launch. Growth plan clients have ongoing support — we fix issues same day.</div></div>
+        <div class="faq-item"><button class="faq-q" onclick="faq(this)"><span class="faq-q-text">Are AI videos good enough for professional use?</span><span class="faq-ico"><svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"/></svg></span></button><div class="faq-a">With HeyGen and Sync.so — yes, for demos, onboarding, training, and social content. We're honest about where a human presenter is still better, and we'll tell you before you spend a penny.</div></div>
+        <div class="faq-item"><button class="faq-q" onclick="faq(this)"><span class="faq-q-text">Do you work with clients outside Pakistan?</span><span class="faq-ico"><svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"/></svg></span></button><div class="faq-a">Yes — most clients are in the UK, US, Europe, and the Middle East. We've been remote-first since 2013. Time zones, async communication, and global delivery are built into how we work.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section contact-bg" id="contact">
+  <div class="inner">
+    <div class="contact-layout">
+      <div class="contact-left rev">
+        <div class="ey"><span class="ey-bar" style="background:linear-gradient(90deg,#FF3CAC,#2BD9D9)"></span>Get in touch</div>
+        <h2 class="h2">Tell us what's<br>slowing you down.<br><em>We'll fix it.</em></h2>
+        <p class="sub">Free 30-minute strategy call. No pitch. No pressure. Just clarity on what automation can do for your business.</p>
+        <div class="cf-features">
+          <div class="cf-item"><div class="cf-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div><div class="cf-title">Response within 4 hours</div><p class="cf-desc">We don't leave enquiries sitting. You'll hear from us same business day.</p></div></div>
+          <div class="cf-item"><div class="cf-ico"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l.95-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div><div><div class="cf-title">Free 30-min strategy call</div><p class="cf-desc">Walk us through your bottlenecks. Honest advice — whether you hire us or not.</p></div></div>
+          <div class="cf-item"><div class="cf-ico"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div><div class="cf-title">No pressure, no pitch</div><p class="cf-desc">If we're not the right fit, we'll tell you — and point you somewhere that is.</p></div></div>
+        </div>
+      </div>
+      <div class="rev d1">
+        <div class="cform">
+          <div class="form-head-title">Book your free strategy call</div>
+          <div class="form-head-sub">Fill this in — we respond within 4 hours</div>
+          <div class="frow"><div class="fg"><label class="flabel">First name</label><input class="finput" type="text" placeholder="Ali"></div><div class="fg"><label class="flabel">Last name</label><input class="finput" type="text" placeholder="Khan"></div></div>
+          <div class="fg"><label class="flabel">Work email</label><input class="finput" type="email" placeholder="ali@company.com"></div>
+          <div class="fg"><label class="flabel">Company &amp; website</label><input class="finput" type="text" placeholder="Acme Co — acme.com"></div>
+          <div class="fg"><label class="flabel">What do you want to automate?</label><select class="fselect"><option value="" disabled selected>Select a category</option><option>Lead generation pipeline</option><option>Client onboarding</option><option>WhatsApp automation</option><option>Social media auto-posting</option><option>AI video production</option><option>Invoice &amp; payment automation</option><option>AI support desk</option><option>Something else</option></select></div>
+          <div class="fg"><label class="flabel">Tell us more <span style="color:var(--ink-4);text-transform:none;letter-spacing:0;font-size:11px">(optional)</span></label><textarea class="ftextarea" placeholder="What's the biggest manual task costing you time right now?"></textarea></div>
+          <button class="fsubmit" onclick="handleSend(event)">Send &amp; book a call <svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button>
+          <p class="fnote">Or email <a href="mailto:info@esipick.tech" style="color:var(--purple)">info@esipick.tech</a> — we read everything.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="cta-strip">
+  <div class="inner">
+    <h2 class="h2" style="text-align:center">Ready to automate?<br><em>Let's talk.</em></h2>
+    <p class="sub">Free 30-minute call. No pitch. Just clarity.</p>
+    <div class="cta-btns">
+      <a href="#contact" class="btn-grad">Book free strategy call <svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+      <a href="mailto:info@esipick.tech" class="btn-ghost">info@esipick.tech</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div><a href="#" class="flogo">esipick<span style="opacity:.3">.</span>tech<span class="logo-dot"></span></a><p class="ftagline">Automation &amp; AI Video Production for businesses serious about growth. Built by practitioners. Trusted since 2013.</p><a href="mailto:info@esipick.tech" class="femail">info@esipick.tech</a></div>
+      <div><div class="fc-title">Services</div><ul class="fc-links"><li><a href="#services">n8n Automation</a></li><li><a href="#services">AI Video Production</a></li><li><a href="#services">Lead Generation</a></li><li><a href="#services">WhatsApp Automation</a></li><li><a href="#services">AI Support Desks</a></li></ul></div>
+      <div><div class="fc-title">Company</div><ul class="fc-links"><li><a href="https://www.esipick.com" target="_blank">Esipick.com ↗</a></li><li><a href="#founder">About Ali</a></li><li><a href="#testimonials">Client Stories</a></li><li><a href="#pricing">Pricing</a></li><li><a href="#blog">Insights</a></li><li><a href="#faq">FAQ</a></li></ul></div>
+      <div><div class="fc-title">Follow</div><ul class="fc-links"><li><a href="https://pk.linkedin.com/company/esipick" target="_blank">LinkedIn</a></li><li><a href="https://www.instagram.com/esipick/" target="_blank">Instagram</a></li><li><a href="https://www.facebook.com/Esipick" target="_blank">Facebook</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><span>© 2025 Esipick. All rights reserved.</span><a href="https://www.esipick.com" target="_blank">Main site: esipick.com →</a></div>
+  </div>
+</footer>
+
+<script>
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('on',scrollY>10),{passive:true});
+const burger=document.getElementById('burger'),mob=document.getElementById('mob');
+burger.addEventListener('click',()=>{burger.classList.toggle('open');mob.classList.toggle('open')});
+function cm(){burger.classList.remove('open');mob.classList.remove('open')}
+const io=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}}),{threshold:.07,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.rev').forEach(el=>io.observe(el));
+function faq(btn){const it=btn.closest('.faq-item'),open=it.classList.contains('open');document.querySelectorAll('.faq-item.open').forEach(i=>i.classList.remove('open'));if(!open)it.classList.add('open')}
+function handleSend(e){e.preventDefault();const b=document.querySelector('.fsubmit');b.innerHTML='&#x2713;&nbsp; Message sent — we\'ll be in touch within 4 hours';b.style.background='linear-gradient(90deg,#22c55e,#16a34a)';b.style.cursor='default'}
+</script>
+</body>
+</html>
